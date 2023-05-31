@@ -7,7 +7,7 @@ function Pokedex() {
 
     useEffect(() => {
         axios
-            .get('https://pokeapi.co/api/v2/pokemon?limit=200')
+            .get('https://pokeapi.co/api/v2/pokemon?limit=1008')
             .then((response) => {
                 const promises = response.data.results.map(pokemon => {
                     return axios.get(pokemon.url);
@@ -23,7 +23,7 @@ function Pokedex() {
     return (
         <div>
             {pokemon.map((p, index) => (  
-                <PokemonCard key={index} pokemon={p} /> 
+                <PokemonCard key={index} pokemon={p} pokemonNumber={index + 1}/> 
             ))}
         </div>
     );
