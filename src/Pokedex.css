@@ -1,0 +1,10 @@
+.pokedex-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.pokedex-grid > div {
+    flex: 1 0 16%; 
+    margin: 0.5em; 
+}
