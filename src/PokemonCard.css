@@ -1,73 +1,138 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@200;300;500;700&display=swap');
+
+.pokemon-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.pokemon-card img {
+  width: 200px;
+  height: 200px;
+}
+
+.pokemon-card h3 {
+  font-size: 16px;
+  font-family: 'Barlow', sans-serif;
+}
+
+.pokemon-card p {
+  font-size: 14px;
+}
+
+.pokemon-card .types {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.pokemon-card .type {
+  padding: 3px 10px;
+  border-radius: 5px;
+  color: white;
+  font-size: 14px; /* Altere o tamanho do texto dos tipos aqui */
+  text-transform: capitalize;
+  font-family: 'Barlow', sans-serif;
+}
+
 .grass {
-    background-color: green;
+  background-color: #24aa72d5;
 }
 
 .fire {
-    background-color: red;
+  background-color: #fc653fe5;
 }
 
 .electric {
-    background-color: yellow;
+  background-color: #FDEB71;
 }
 
 .water {
-    background-color: blue;
+  background-color: #0066b9bd;
 }
 
 .rock {
-    background-color: brown;
+  background-color: rgba(110, 47, 47, 0.808);
 }
 
 .ghost {
-    background-color: purple;
+  background-color: rgba(141, 50, 141, 0.781);
 }
 
 .psychic {
-    background-color: lightpink;
+  background-color: lightpink;
 }
 
 .ground {
-    background-color: goldenrod;
+  background-color: rgba(218, 165, 32, 0.74);
 }
 
-
 .normal {
-    background-color: beige;
+  background-color: beige;
 }
 
 .fighting {
-    background-color: crimson;
+  background-color: rgba(168, 48, 58, 0.808);
 }
 
 .flying {
-    background-color: skyblue;
+  background-color: rgb(134, 199, 224);
 }
 
 .poison {
-    background-color: darkslateblue;
+  background-color: rgba(71, 61, 139, 0.849);
 }
 
 .bug {
-    background-color: olivedrab;
+  background-color: #90f7be;
 }
 
 .steel {
-    background-color: darkgray;
+  background-color: darkgray;
 }
 
 .fairy {
-    background-color: lightpink;
+  background-color: rgb(255, 176, 225);
 }
 
 .ice {
-    background-color: lightcyan;
+  background-color: rgb(209, 252, 252);
 }
 
 .dragon {
-    background-color: royalblue;
+  background-color: royalblue;
 }
 
 .dark {
-    background-color: black;
-    color: white; /* para garantir que o texto ainda seja visível */
+  background-color: rgba(0, 0, 0, 0.699);
+  color: white;
+}
+
+.pokemon-card h3 {
+  font-family: 'Barlow', sans-serif;
+  font-size: 25px;
+}
+
+.pokemon-card .types .type {
+  font-family: 'Barlow', sans-serif;
+  font-size: 14px; /* Ajuste o tamanho dos tipos dos Pokémon para 14 pixels */
+}
+
+.type-pill {
+  background-color: #ffffff9f;
+  border-radius: 16px;
+  padding: 4px 8px;
+  margin-right: 8px;
+}
+
+.pokemon-number {
+  font-size: 12px;
+  font-weight: 300;
 }

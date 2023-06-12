@@ -23,16 +23,26 @@ function PokemonCard({ pokemon, pokemonNumber }) {
     const pokemonStats = formatPokemonStats(pokemon.stats);
     const pokemonNumberString = String(pokemonNumber).padStart(4, '0');
 
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+      }
+
     return (
         <div className={`pokemon-card ${pokemon.types[0].type.name}`}>
+            
             <img 
                 src={imageUrl} 
                 alt={pokemon.name} 
                 onClick={handleShow} 
                 onError={(e) => {e.target.onerror = null; e.target.src = fallbackUrl}}
             />
-            <h3>{pokemonNumberString} - {pokemon.name}</h3>
-            <p>Types: {pokemonTypes}</p>
+            <h3>{capitalizeFirstLetter(pokemon.name)}</h3>
+<span className="pokemon-number">{pokemonNumberString}</span>
+            <p className="pokemon-types">
+   {pokemonTypes.split(", ").map((type, index) => (
+    <span key={index} className="type-pill">{type}</span>
+  ))}
+</p>
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>{pokemon.name}</Modal.Title>
