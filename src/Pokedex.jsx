@@ -3,7 +3,6 @@ import axios from 'axios';
 import PokemonCard from './PokemonCard';
 import './Pokedex.css';
 
-
 function Pokedex() {
   const [pokemon, setPokemon] = useState([]);
   const [visiblePokemonCount, setVisiblePokemonCount] = useState(18);
@@ -11,7 +10,7 @@ function Pokedex() {
   const [selectedType, setSelectedType] = useState('');
   const [selectedGeneration, setSelectedGeneration] = useState('');
   const [filteredPokemon, setFilteredPokemon] = useState([]);
-  const [allGenerationsSelected, setAllGenerationsSelected] = useState(true);
+  const [selectedPokemon, setSelectedPokemon] = useState(null);
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -43,7 +42,6 @@ function Pokedex() {
 
     if (selectedGeneration === '') {
       setFilteredPokemon(pokemon); // Exibe todos os pokemons novamente
-      setAllGenerationsSelected(true);
     } else {
       // Define o intervalo de números de Pokémon para cada geração
       const generationRanges = {
@@ -62,7 +60,6 @@ function Pokedex() {
       const filteredByGeneration = pokemon.filter((p) => p.id >= minNumber && p.id <= maxNumber);
 
       setFilteredPokemon(filteredByGeneration);
-      setAllGenerationsSelected(false);
     }
   };
 
@@ -91,6 +88,10 @@ function Pokedex() {
 
   const loadMorePokemon = () => {
     setVisiblePokemonCount(filteredPokemonList.length);
+  };
+
+  const handlePokemonClick = (pokemon) => {
+    setSelectedPokemon(pokemon);
   };
 
   return (
@@ -129,46 +130,6 @@ function Pokedex() {
             <option value="generation-vii">Generation VII</option>
             <option value="generation-viii">Generation VIII</option>
           </select>
-          {selectedGeneration === 'generation-i' && (
-            <button className="load-more-button" onClick={loadMorePokemon}>
-              Load More
-            </button>
-          )}
-          {selectedGeneration === 'generation-ii' && (
-            <button className="load-more-button" onClick={loadMorePokemon}>
-              Load More
-            </button>
-          )}
-          {selectedGeneration === 'generation-iii' && (
-            <button className="load-more-button" onClick={loadMorePokemon}>
-              Load More
-            </button>
-          )}
-          {selectedGeneration === 'generation-iv' && (
-            <button className="load-more-button" onClick={loadMorePokemon}>
-              Load More
-            </button>
-          )}
-          {selectedGeneration === 'generation-v' && (
-            <button className="load-more-button" onClick={loadMorePokemon}>
-              Load More
-            </button>
-          )}
-          {selectedGeneration === 'generation-vi' && (
-            <button className="load-more-button" onClick={loadMorePokemon}>
-              Load More
-            </button>
-          )}
-          {selectedGeneration === 'generation-vii' && (
-            <button className="load-more-button" onClick={loadMorePokemon}>
-              Load More
-            </button>
-          )}
-          {selectedGeneration === 'generation-viii' && (
-            <button className="load-more-button" onClick={loadMorePokemon}>
-              Load More
-            </button>
-          )}
         </div>
         <div className="search-container">
           <input
@@ -180,11 +141,25 @@ function Pokedex() {
         </div>
       </div>
       <div className="pokedex-grid" ref={containerRef}>
-        {filteredPokemonList.slice(0, visiblePokemonCount).map((p, index) => (
-          <PokemonCard key={index} pokemon={p} pokemonNumber={index + 1} />
-        ))}
+        {selectedPokemon ? (
+          <PokemonCard
+            key={selectedPokemon.id}
+            pokemon={selectedPokemon}
+            pokemonNumber={selectedPokemon.id}
+            onClick={handlePokemonClick}
+          />
+        ) : (
+          filteredPokemonList.slice(0, visiblePokemonCount).map((p, index) => (
+            <PokemonCard
+              key={index}
+              pokemon={p}
+              pokemonNumber={index + 1}
+              onClick={handlePokemonClick}
+            />
+          ))
+        )}
       </div>
-      {allGenerationsSelected && filteredPokemonList.length > visiblePokemonCount && (
+      {filteredPokemonList.length > visiblePokemonCount && !selectedPokemon && (
         <div className="load-more-container">
           <button className="load-more-button" onClick={loadMorePokemon}>
             Load More
