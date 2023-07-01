@@ -37,10 +37,10 @@
   padding: 3px 10px;
   border-radius: 5px;
   color: white;
-  font-size: 14px; /* Altere o tamanho do texto dos tipos aqui */
-  text-transform: capitalize;
+  font-size: 14px; 
+   text-transform: capitalize;
   font-family: 'Barlow', sans-serif;
-}
+} 
 
 .grass {
   background-color: #24aa72d5;
@@ -122,8 +122,8 @@
 
 .pokemon-card .types .type {
   font-family: 'Barlow', sans-serif;
-  font-size: 14px; /* Ajuste o tamanho dos tipos dos Pokémon para 14 pixels */
-}
+   font-size: 14px; 
+ } 
 
 .type-pill {
   background-color: #ffffff9f;
@@ -136,4 +136,4 @@
   font-size: 12px;
   font-weight: 300;
 }
-
+  

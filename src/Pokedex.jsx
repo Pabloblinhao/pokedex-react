@@ -2,8 +2,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import PokemonCard from './PokemonCard';
 import './Pokedex.css';
-import { Link } from 'react-router-dom';
-
 
 function Pokedex() {
   const [pokemon, setPokemon] = useState([]);
@@ -143,25 +141,24 @@ function Pokedex() {
         </div>
       </div>
       <div className="pokedex-grid" ref={containerRef}>
-    {selectedPokemon ? (
-      <PokemonCard
-        key={selectedPokemon.id}
-        pokemon={selectedPokemon}
-        pokemonNumber={selectedPokemon.id}
-        onClick={handlePokemonClick}
-      />
-    ) : (
-      filteredPokemonList.slice(0, visiblePokemonCount).map((p, index) => (
-        <Link to={`/pokemon/${p.id}`} key={index}>
+        {selectedPokemon ? (
           <PokemonCard
-            pokemon={p}
-            pokemonNumber={index + 1}
+            key={selectedPokemon.id}
+            pokemon={selectedPokemon}
+            pokemonNumber={selectedPokemon.id}
             onClick={handlePokemonClick}
           />
-        </Link>
-      ))
-    )}
-  </div>
+        ) : (
+          filteredPokemonList.slice(0, visiblePokemonCount).map((p, index) => (
+            <PokemonCard
+              key={index}
+              pokemon={p}
+              pokemonNumber={index + 1}
+              onClick={handlePokemonClick}
+            />
+          ))
+        )}
+      </div>
       {filteredPokemonList.length > visiblePokemonCount && !selectedPokemon && (
         <div className="load-more-container">
           <button className="load-more-button" onClick={loadMorePokemon}>
