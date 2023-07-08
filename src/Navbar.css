@@ -1,0 +1,39 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  background-color: rgb(138, 44, 192);
+  margin: -8px;
+  padding: 10px;
+  
+ 
+}
+
+.logo-image {
+  width: 50px;
+  height: 50px;
+  margin-left: 200px;
+}
+
+.Pokedex-text {
+  height: 65px;
+  margin-right: 200px;
+}
+
+
+@media (max-width: 800px) {
+  .logo-image {
+    margin-left: 20px; 
+  }
+  
+  .Pokedex-text {
+    margin-right: 20px; 
+  }
+}
+
+@media (max-width: 1200px) {
+
+}
+
+@media (max-width: 1920px) {
+ 
+}

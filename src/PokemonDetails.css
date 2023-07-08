@@ -1,0 +1,72 @@
+.pokemon-detailsDetails {
+    text-align: center;
+    padding: 2rem;
+    margin-top: 120px;
+  }
+  
+  .pokemon-headerDetails {
+    display: flex;
+  align-items: center;
+  }
+  
+  .pokemon-numberDetails {
+    display: block;
+    font-size: 2rem;
+    margin-left: 500px;
+  }
+  
+  .pokemon-nameDetails {
+    font-size: 3rem;
+    margin-left: 900px;
+    display: block;
+  }
+  
+  .pokemon-descriptionDetails {
+    text-align: center;
+    margin: 1rem 0;
+    font-size: 1.2rem;
+  }
+  
+  .pokemon-imageDetails {
+    display: block;
+    margin-left: 300px;
+    width: 700px;
+  }
+  .section-buttonsDetails {
+    display: flex;
+    justify-content: flex-start;
+    margin-left: 400px; /* Ajuste o valor conforme necessário */
+  }
+  
+  .section-buttons button {
+    margin-left: 10px; /* Ajuste o valor conforme necessário */
+  }
+  
+  .active {
+    font-weight: bold;
+  }
+  
+  h3 {
+    margin-top: 2rem;
+  }
+
+  .pokemon-description {
+    margin-top: -600px;
+    margin-left: 500px;
+}
+  
+  .pokemon-stats {
+    margin-top: -600px;
+    margin-left: 500px;
+  }
+  
+  .pokemon-evolutions {
+    margin-top: -600px;
+    margin-left: 500px;
+    }
+    .evolution-image {
+        width: 220px;
+      }
+  .pokemon-moves {
+    /* Estilos para os moves */
+  }

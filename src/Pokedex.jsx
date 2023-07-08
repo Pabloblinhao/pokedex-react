@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import PokemonCard from './PokemonCard';
 import './Pokedex.css';
-
+import  Search  from './assets/Search.png';
 function Pokedex() {
   const [pokemon, setPokemon] = useState([]);
   const [visiblePokemonCount, setVisiblePokemonCount] = useState(18);
@@ -12,6 +12,7 @@ function Pokedex() {
   const [filteredPokemon, setFilteredPokemon] = useState([]);
   const [selectedPokemon, setSelectedPokemon] = useState(null);
   const containerRef = useRef(null);
+  const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
     axios
@@ -28,6 +29,43 @@ function Pokedex() {
       });
   }, []);
 
+  const handleSearch = () => {
+    if (!isSearching) {
+      const searchTermLowerCase = searchTerm.toLowerCase();
+
+      // Filtra os pokemons com base no termo de pesquisa
+      const filteredBySearchTerm = pokemon.filter((p) =>
+        p.name.toLowerCase().includes(searchTermLowerCase)
+      );
+
+      // Aplica os filtros adicionais (tipo e geração)
+      const filteredByTypeAndGeneration = selectedType
+        ? filteredBySearchTerm.filter((p) =>
+            p.types.some((type) => type.type.name === selectedType)
+          )
+        : filteredBySearchTerm;
+
+      const filteredByTypeAndGenerationAndVisibleCount = filteredByTypeAndGeneration.slice(
+        0,
+        visiblePokemonCount
+      );
+
+      setFilteredPokemon(filteredByTypeAndGenerationAndVisibleCount);
+      setIsSearching(true);
+    }
+  };
+
+
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
+  };
+  
+  const handleButtonClick = () => {
+    handleSearch();
+  };
+  
   const handleTypeChange = (e) => {
     setSelectedType(e.target.value);
     setSearchTerm('');
@@ -132,13 +170,17 @@ function Pokedex() {
           </select>
         </div>
         <div className="search-container">
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search Pokemon..."
-          />
-        </div>
+        <input
+  type="text"
+  value={searchTerm}
+  onChange={(e) => setSearchTerm(e.target.value)}
+  onKeyPress={handleKeyPress}
+  placeholder="Search Pokemon..."
+/>
+<button className="search-icon" onClick={handleButtonClick}>
+  <img src={Search} alt="Ícone de Lupa" />
+</button>
+    </div>
       </div>
       <div className="pokedex-grid" ref={containerRef}>
         {selectedPokemon ? (
