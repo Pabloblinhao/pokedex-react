@@ -59,7 +59,7 @@
     margin-top: -600px;
     margin-left: 500px;
   }
-  
+
   .pokemon-evolutions {
     margin-top: -600px;
     margin-left: 500px;
@@ -68,5 +68,6 @@
         width: 220px;
       }
   .pokemon-moves {
-    /* Estilos para os moves */
+    margin-top: -600px;
+    margin-left: 500px;
   }

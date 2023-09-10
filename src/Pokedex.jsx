@@ -2,86 +2,88 @@ import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import PokemonCard from './PokemonCard';
 import './Pokedex.css';
-import  Search  from './assets/Search.png';
+// import  Search  from './assets/Search.png';
 function Pokedex() {
-  const [pokemon, setPokemon] = useState([]);
-  const [visiblePokemonCount, setVisiblePokemonCount] = useState(18);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedType, setSelectedType] = useState('');
+  const [pokeList, setList] = useState([]);
+  const [searchValue, setSearchValue] = useState('');
+  const [listInput, setListInput] = useState([]);
+  const [searchPerformed, setSearchPerformed] = useState(false);
   const [selectedGeneration, setSelectedGeneration] = useState('');
-  const [filteredPokemon, setFilteredPokemon] = useState([]);
-  const [selectedPokemon, setSelectedPokemon] = useState(null);
+  const [selectedType, setSelectedType] = useState('');
+  const [filteredGeneration, setFilteredGeneration] = useState([]);
+  const [visiblePokemonCount, setVisiblePokemonCount] = useState(18);
   const containerRef = useRef(null);
-  const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
-    axios
-      .get('https://pokeapi.co/api/v2/pokemon?limit=1008')
+    axios.get("https://pokeapi.co/api/v2/pokemon?limit=1008")
       .then((response) => {
-        const promises = response.data.results.map((pokemon) => {
-          return axios.get(pokemon.url);
-        });
-        Promise.all(promises).then((pokemonResponses) => {
-          const pokemonData = pokemonResponses.map((response) => response.data);
-          setPokemon(pokemonData);
-          setFilteredPokemon(pokemonData); // Inicialmente, exibe todos os pokemons
+        const data = response.data.results;
+        const pokemonDetails = data.map((pokemon, index) => ({
+          name: pokemon.name,
+          id: index + 1,
+          info: {},
+        }));
+
+        Promise.all(
+          pokemonDetails.map((pokemon) => axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemon.id}`))
+        ).then((responses) => {
+          responses.forEach((response, index) => {
+            pokemonDetails[index].info.image = response.data.sprites.other['official-artwork'].front_default;
+            pokemonDetails[index].info.types = response.data.types.map((type) => type.type.name);
+          });
+          setList(pokemonDetails);
+          setFilteredGeneration(pokemonDetails); // Inicialmente, exibe todos os pokemons
         });
       });
   }, []);
 
-  const handleSearch = () => {
-    if (!isSearching) {
-      const searchTermLowerCase = searchTerm.toLowerCase();
+  useEffect(() => {
+    const scrollContainer = containerRef.current;
+    scrollContainer.addEventListener('scroll', handleScroll);
+    return () => {
+      scrollContainer.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
-      // Filtra os pokemons com base no termo de pesquisa
-      const filteredBySearchTerm = pokemon.filter((p) =>
-        p.name.toLowerCase().includes(searchTermLowerCase)
+  const handleInputChange = (event) => {
+    const list = event.target.value.toLowerCase();
+
+    if (list === '') {
+      setListInput([]);
+    } else {
+      const pokeFilter = pokeList.filter(pokemon =>
+        pokemon.name.toLowerCase().includes(list)
       );
-
-      // Aplica os filtros adicionais (tipo e geração)
-      const filteredByTypeAndGeneration = selectedType
-        ? filteredBySearchTerm.filter((p) =>
-            p.types.some((type) => type.type.name === selectedType)
-          )
-        : filteredBySearchTerm;
-
-      const filteredByTypeAndGenerationAndVisibleCount = filteredByTypeAndGeneration.slice(
-        0,
-        visiblePokemonCount
-      );
-
-      setFilteredPokemon(filteredByTypeAndGenerationAndVisibleCount);
-      setIsSearching(true);
+      setListInput(pokeFilter.slice(0, 5));
     }
-  };
+  }
 
+  const handleSearch = () => {
+    const filteredList = pokeList.filter((pokemon) =>
+      pokemon.name.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    setFilteredGeneration(filteredList);
+    setSearchPerformed(true);
+  }
 
-  const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
+  const handlePokemonClick = (pokemonName) => {
+    setSearchValue(pokemonName);
+    setListInput([]);
+  }
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
       handleSearch();
     }
-  };
-  
-  const handleButtonClick = () => {
-    handleSearch();
-  };
-  
-  const handleTypeChange = (e) => {
-    setSelectedType(e.target.value);
-    setSearchTerm('');
-    setVisiblePokemonCount(18); // Reinicia a contagem de pokemons visíveis
-  };
+  }
 
   const handleGenerationChange = (e) => {
-    const selectedGeneration = e.target.value;
-    setSelectedGeneration(selectedGeneration);
-    setSearchTerm('');
-    setVisiblePokemonCount(18); // Reinicia a contagem de pokemons visíveis
+    const filteredGeneration = e.target.value;
+    setSelectedGeneration(filteredGeneration);
 
-    if (selectedGeneration === '') {
-      setFilteredPokemon(pokemon); // Exibe todos os pokemons novamente
+    if (filteredGeneration === '') {
+      setFilteredGeneration(pokeList);
     } else {
-      // Define o intervalo de números de Pokémon para cada geração
       const generationRanges = {
         'generation-i': [1, 151],
         'generation-ii': [152, 251],
@@ -93,22 +95,40 @@ function Pokedex() {
         'generation-viii': [810, 898]
       };
 
-      // Filtra os pokemons com base no intervalo da geração selecionada
-      const [minNumber, maxNumber] = generationRanges[selectedGeneration];
-      const filteredByGeneration = pokemon.filter((p) => p.id >= minNumber && p.id <= maxNumber);
+      const [minNumber, maxNumber] = generationRanges[filteredGeneration];
+      const filteredByGeneration = pokeList.filter((p) => p.id >= minNumber && p.id <= maxNumber);
 
-      setFilteredPokemon(filteredByGeneration);
+      setFilteredGeneration(filteredByGeneration);
     }
   };
 
+  const handleTypeChange = (e) => {
+    const selectedType = e.target.value;
+    setSelectedType(selectedType);
+
+    if (selectedType === '') {
+      setFilteredGeneration(pokeList);
+    } else {
+      const filteredByType = pokeList.filter((p) => p.info.types.includes(selectedType));
+      setFilteredGeneration(filteredByType);
+    }
+  };
+
+
+
   const filteredByType = selectedType
-    ? filteredPokemon.filter((p) => p.types.some((type) => type.type.name === selectedType))
-    : filteredPokemon;
+  ? filteredGeneration.filter((p) => p.types.some((type) => type.type.name === selectedType))
+  : filteredGeneration;
 
-  const filteredPokemonList = filteredByType.filter((p) =>
-    p.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
+const filteredPokemonList = filteredByType.filter((p) =>
+  p.name.toLowerCase().includes(searchValue.toLowerCase())
+);
+  
+  const loadMorePokemon = () => {
+    setVisiblePokemonCount(filteredPokemonList.length);
+  };
+  
+  
   const handleScroll = () => {
     const scrollContainer = containerRef.current;
     if (scrollContainer.scrollHeight - scrollContainer.scrollTop === scrollContainer.clientHeight) {
@@ -116,97 +136,92 @@ function Pokedex() {
     }
   };
 
-  useEffect(() => {
-    const scrollContainer = containerRef.current;
-    scrollContainer.addEventListener('scroll', handleScroll);
-    return () => {
-      scrollContainer.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
 
-  const loadMorePokemon = () => {
-    setVisiblePokemonCount(filteredPokemonList.length);
-  };
-
-  const handlePokemonClick = (pokemon) => {
-    setSelectedPokemon(pokemon);
-  };
 
   return (
     <div>
-      <div className="search-filter-container">
-        <div className="filter-container">
-          <select value={selectedType} onChange={handleTypeChange}>
-            <option value="">All Types</option>
-            <option value="grass">Grass</option>
-            <option value="fire">Fire</option>
-            <option value="water">Water</option>
-            <option value="bug">Bug</option>
-            <option value="poison">Poison</option>
-            <option value="electric">Electric</option>
-            <option value="ground">Ground</option>
-            <option value="fairy">Fairy</option>
-            <option value="flying">Flying</option>
-            <option value="fighting">Fighting</option>
-            <option value="rock">Rock</option>
-            <option value="psychic">Psychic</option>
-            <option value="steel">Steel</option>
-            <option value="ice">Ice</option>
-            <option value="dragon">Dragon</option>
-            <option value="dark">Dark</option>
-            <option value="ghost">Ghost</option>
-            <option value="normal">Normal</option>
-          </select>
-          <select value={selectedGeneration} onChange={handleGenerationChange}>
-            <option value="">All Generations</option>
-            <option value="generation-i">Generation I</option>
-            <option value="generation-ii">Generation II</option>
-            <option value="generation-iii">Generation III</option>
-            <option value="generation-iv">Generation IV</option>
-            <option value="generation-v">Generation V</option>
-            <option value="generation-vi">Generation VI</option>
-            <option value="generation-vii">Generation VII</option>
-            <option value="generation-viii">Generation VIII</option>
-          </select>
+      <input
+        type='text'
+        value={searchValue}
+        onChange={(e) => {
+          setSearchValue(e.target.value);
+          handleInputChange(e);
+        }}
+        onKeyDown={handleKeyDown}
+        placeholder="Procure por um pokémon..."
+      />
+
+      <button onClick={handleSearch}>Buscar</button>
+
+      <select value={selectedGeneration} onChange={handleGenerationChange}>
+        <option value="">All Generations</option>
+        <option value="generation-i">Generation I</option>
+        <option value="generation-ii">Generation II</option>
+        <option value="generation-iii">Generation III</option>
+        <option value="generation-iv">Generation IV</option>
+        <option value="generation-v">Generation V</option>
+        <option value="generation-vi">Generation VI</option>
+        <option value="generation-vii">Generation VII</option>
+        <option value="generation-viii">Generation VIII</option>
+      </select>
+
+      <select value={selectedType} onChange={handleTypeChange}>
+        <option value="">All Types</option>
+        <option value="grass">Grass</option>
+        <option value="fire">Fire</option>
+        <option value="water">Water</option>
+        <option value="bug">Bug</option>
+        <option value="poison">Poison</option>
+        <option value="electric">Electric</option>
+        <option value="ground">Ground</option>
+        <option value="fairy">Fairy</option>
+        <option value="flying">Flying</option>
+        <option value="fighting">Fighting</option>
+        <option value="rock">Rock</option>
+        <option value="psychic">Psychic</option>
+        <option value="steel">Steel</option>
+        <option value="ice">Ice</option>
+        <option value="dragon">Dragon</option>
+        <option value="dark">Dark</option>
+        <option value="ghost">Ghost</option>
+        <option value="normal">Normal</option>
+      </select>
+
+      {listInput.map((pokemon) => (
+        <div key={pokemon.id} onClick={() => handlePokemonClick(pokemon.name)}>
+          {pokemon.name}
         </div>
-        <div className="search-container">
-        <input
-  type="text"
-  value={searchTerm}
-  onChange={(e) => setSearchTerm(e.target.value)}
-  onKeyPress={handleKeyPress}
-  placeholder="Search Pokemon..."
-/>
-<button className="search-icon" onClick={handleButtonClick}>
-  <img src={Search} alt="Ícone de Lupa" />
-</button>
-    </div>
+      ))}
+      <div ref={containerRef}>
+  {searchPerformed
+    ? filteredGeneration.slice(0, visiblePokemonCount).map((pokemon) => (
+      <div key={pokemon.id}>
+        <PokemonCard
+          name={pokemon.name}
+          type={pokemon.info.types.join(",")}
+          image={pokemon.info.image}
+          id={pokemon.id}
+        />
       </div>
-      <div className="pokedex-grid" ref={containerRef}>
-        {selectedPokemon ? (
-          <PokemonCard
-            key={selectedPokemon.id}
-            pokemon={selectedPokemon}
-            pokemonNumber={selectedPokemon.id}
-            onClick={handlePokemonClick}
-          />
-        ) : (
-          filteredPokemonList.slice(0, visiblePokemonCount).map((p, index) => (
-            <PokemonCard
-              key={index}
-              pokemon={p}
-              pokemonNumber={index + 1}
-              onClick={handlePokemonClick}
-            />
-          ))
-        )}
+    ))
+    : filteredGeneration.slice(0, visiblePokemonCount).map((pokemon) => (
+      <div key={pokemon.id}>
+        <PokemonCard
+          name={pokemon.name}
+          type={pokemon.info.types.join(",")}
+          image={pokemon.info.image}
+          id={pokemon.id}
+        />
       </div>
-      {filteredPokemonList.length > visiblePokemonCount && !selectedPokemon && (
-        <div className="load-more-container">
-          <button className="load-more-button" onClick={loadMorePokemon}>
-            Load More
-          </button>
-        </div>
+    ))}
+</div>
+
+      {filteredGeneration.length > visiblePokemonCount && !searchValue &&(
+      <div className="load-more-container">
+        <button className="load-more-button" onClick={loadMorePokemon}>
+          Load More
+        </button>
+      </div>
       )}
     </div>
   );
