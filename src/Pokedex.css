@@ -1,81 +1,87 @@
 .pai{
-margin-top: 5%;
-
-
-
-}
-
-.pokedex-grid {
-  max-width: 100px; /* Define uma largura máxima para o container */
-  margin: 0 auto; /* Centraliza o container horizontalmente */
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  justify-content: center;
-  gap: 20px;
-}
-
-.pokedex-grid > div {
-  flex: 1 0 16%;
-  margin: 0.5em;
-}
-
-.list-types-generations{
+  margin-top: 5%;
+  
+  
+  
+  }
+  
+  .pokedex-grid {
+    max-width: 100px; /* Define uma largura máxima para o container */
+    margin: 0 auto; /* Centraliza o container horizontalmente */
+    margin-top: 120px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .pokedex-grid > div {
+    flex: 1 0 16%;
+    margin: 0.5em;
+  }
+  
+  .list-types-generations{
+    position:absolute;
+    margin-top: -90px;
+    left: 60%;
+    transform: translate(-50%, -50%);
+    
+    height: 50px;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .search-input-button {
   position:absolute;
   margin-top: -90px;
-  left: 60%;
+  left: 50%;
   transform: translate(-50%, -50%);
-  
+  background: #eeeeee;
   height: 50px;
   border-radius: 10px;
   padding: 10px;
   display: flex;
   justify-content: space-between;
-}
-
-.search-input-button {
-position:absolute;
-margin-top: -90px;
-left: 50%;
-transform: translate(-50%, -50%);
-background: #eeeeee;
-height: 50px;
-border-radius: 10px;
-padding: 10px;
-display: flex;
-justify-content: space-between;
-align-items: center;
-
-}
-
-
-
-.filter-container {
-  display: flex;
-  margin-right: 1000px;
-}
-
-.search-container {
-  margin-left: 1000px; 
+  align-items: center;
   
-
-}
-.search-button {
-  background: transparent;
-  border: none;
-  padding: 0;
-  margin-top: 30px;
-  cursor: pointer;
-}
-
-.search-text {
-background: none;
-border: 0;
-outline: 0;
-}
-
-.search-btn {
+  }
+  
+  
+  
+  .filter-container {
+    display: flex;
+    margin-right: 1000px;
+  }
+  
+  .search-container {
+    margin-left: 1000px; 
+    
+  
+  }
+  .search-button {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin-top: 30px;
+    cursor: pointer;
+  }
+  
+  .search-text {
   background: none;
-  border: none;
-  cursor: pointer;
+  border: 0;
+  outline: 0;
+  }
+  
+  .search-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+  
+  }
 
-}
+  .selected{
+    background-color: #007bff;
+    color: #fff;
+  }
