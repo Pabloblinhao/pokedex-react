@@ -15,7 +15,16 @@ function Pokedex() {
   const [selectedInputItemIndex, setSelectedInputItemIndex] = useState(-1);
   const [isSuggestionListOpen, setIsSuggestionListOpen] = useState(true);
   
-console.log()
+  const generationRanges = {
+    'generation-i': [1, 151],
+    'generation-ii': [152, 251],
+    'generation-iii': [252, 386],
+    'generation-iv': [387, 493],
+    'generation-v': [494, 649],
+    'generation-vi': [650, 721],
+    'generation-vii': [722, 809],
+    'generation-viii': [810, 898]
+  };
   
   const containerRef = useRef(null);
 
@@ -105,9 +114,10 @@ console.log()
   const handleGenerationChange = (e) => {
     const filteredGeneration = e.target.value;
     setSelectedGeneration(filteredGeneration);
-
+  
     if (filteredGeneration === '') {
-      setFilteredGeneration(pokeList);
+      const filteredByType = applyTypeFilter(pokeList, selectedType);
+      setFilteredGeneration(filteredByType);
     } else {
       const generationRanges = {
         'generation-i': [1, 151],
@@ -119,25 +129,46 @@ console.log()
         'generation-vii': [722, 809],
         'generation-viii': [810, 898]
       };
-
+  
       const [minNumber, maxNumber] = generationRanges[filteredGeneration];
-      const filteredByGeneration = pokeList.filter((p) => p.id >= minNumber && p.id <= maxNumber);
-
+      let filteredByGeneration = pokeList.filter((p) => p.id >= minNumber && p.id <= maxNumber);
+  
+      filteredByGeneration = applyTypeFilter(filteredByGeneration, selectedType);
+  
       setFilteredGeneration(filteredByGeneration);
+    }
+  };
+  
+  const applyTypeFilter = (list, selectedType) => {
+    if (selectedType === '') {
+      return list;
+    } else {
+      return list.filter((p) => p.info.types.includes(selectedType));
     }
   };
 
   const handleTypeChange = (e) => {
     const selectedType = e.target.value;
     setSelectedType(selectedType);
-    
+  
     if (selectedType === '') {
-      setFilteredGeneration(pokeList);
+      const filteredByGeneration = applyGenerationFilter(pokeList, selectedGeneration);
+      setFilteredGeneration(filteredByGeneration);
     } else {
-      const filteredByType = pokeList.filter((p) =>
+      const filteredByGeneration = applyGenerationFilter(pokeList, selectedGeneration);
+      const filteredByType = filteredByGeneration.filter((p) =>
         p.info.types.includes(selectedType)
       );
       setFilteredGeneration(filteredByType);
+    }
+  };
+  
+  const applyGenerationFilter = (list, selectedGeneration) => {
+    if (selectedGeneration === '') {
+      return list;
+    } else {
+      const [minNumber, maxNumber] = generationRanges[selectedGeneration];
+      return list.filter((p) => p.id >= minNumber && p.id <= maxNumber);
     }
   };
   const filteredByType = selectedType
@@ -167,6 +198,7 @@ const filteredPokemonList = filteredByType.filter((p) =>
   return (
     <div>
       <input
+        className="search-input"
         type='text'
         value={searchValue}
         onChange={(e) => {
@@ -178,9 +210,9 @@ const filteredPokemonList = filteredByType.filter((p) =>
         
       />
 
-      <button onClick={handleSearch}>Buscar</button>
+      <button className="search-button" onClick={handleSearch}>Buscar</button>
 
-      <select value={selectedGeneration} onChange={handleGenerationChange}>
+      <select  className="list-generation" value={selectedGeneration} onChange={handleGenerationChange}>
         <option value="">All Generations</option>
         <option value="generation-i">Generation I</option>
         <option value="generation-ii">Generation II</option>
@@ -192,7 +224,7 @@ const filteredPokemonList = filteredByType.filter((p) =>
         <option value="generation-viii">Generation VIII</option>
       </select>
 
-      <select value={selectedType} onChange={handleTypeChange}>
+      <select  className="list-types" value={selectedType} onChange={handleTypeChange}>
         <option value="">All Types</option>
         <option value="grass">Grass</option>
         <option value="fire">Fire</option>
