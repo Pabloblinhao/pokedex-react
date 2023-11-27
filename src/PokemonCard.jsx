@@ -4,7 +4,6 @@ import './PokemonCard.css';
 
 function PokemonCard({ name, type, image, id }) {
   const formattedPokemonNumber = String(id).padStart(4, '0');
-
   const primaryType = type[0].toLowerCase();
 
   return (
@@ -16,7 +15,7 @@ function PokemonCard({ name, type, image, id }) {
           alt={`${name} sprite`}
         />
       </Link>
-      <h3 className="pokemon-name">{name}</h3>
+      <h3 className="pokemon-name">  {name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()}</h3>
       <div className="pokemon-types">
         {type.map((typeName, index) => (
           <span

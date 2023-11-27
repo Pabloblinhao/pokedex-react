@@ -5,13 +5,17 @@ import Pokeball from "../src/assets/Pokeball.png";
 import Pokedex from "../src/assets/Pokedex.png";
 
 function Navbar() {
+  const resetPage = () => {
+    window.location.href = "/";
+  };
+  
   return (
     <nav className="navbar">
       <Link to="/">
-        <img src={Pokeball} alt="Home-image" className="logo-image" />
+        <img src={Pokeball} alt="" onClick={resetPage}className="logo-image" />
       </Link>
 
-      <img src={Pokedex}className="Pokedex-text"/>
+      <img src={Pokedex}alt=""className="Pokedex-text"/>
     </nav>
   );
 }

@@ -2,7 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import PokemonCard from './PokemonCard';
 import './Pokedex.css';
-// import  Search  from './assets/Search.png';
+
+
 function Pokedex() {
   const [pokeList, setList] = useState([]);
   const [searchValue, setSearchValue] = useState('');
@@ -196,7 +197,7 @@ const filteredPokemonList = filteredByType.filter((p) =>
 
 
   return (
-    <div>
+    <div className="pokedex-container">
       <input
         className="search-input"
         type='text'
@@ -206,11 +207,11 @@ const filteredPokemonList = filteredByType.filter((p) =>
           handleInputChange(e);
         }}
         onKeyDown={handleKeyDown}
-        placeholder="Procure por um pokémon..."
+        placeholder="Search for a pokemon..."
         
       />
 
-      <button className="search-button" onClick={handleSearch}>Buscar</button>
+      <button className="search-button" onClick={handleSearch}>Search</button>
 
       <select  className="list-generation" value={selectedGeneration} onChange={handleGenerationChange}>
         <option value="">All Generations</option>
