@@ -10,20 +10,20 @@ function PokemonDetails() {
   const [activeSection, setActiveSection] = useState("description");
   const [pokemonDescription, setPokemonDescription] = useState("");
 
-  const getEvolutionChain = (chain) => {
-    const evolutionChain = [];
-    while (chain) {
-      const speciesName = chain.species.name;
-      const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${getPokemonIdFromUrl(
-        chain.species.url
-      )}.png`;
-      evolutionChain.push({ name: speciesName, imageUrl });
-      chain = chain.evolves_to[0];
-    }
-    return evolutionChain;
-  };
-
   useEffect(() => {
+    const getEvolutionChain = (chain) => {
+      const evolutionChain = [];
+      while (chain) {
+        const speciesName = chain.species.name;
+        const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${getPokemonIdFromUrl(
+          chain.species.url
+        )}.png`;
+        evolutionChain.push({ name: speciesName, imageUrl });
+        chain = chain.evolves_to[0];
+      }
+      return evolutionChain;
+    };
+
     const fetchData = async () => {
       try {
         const response = await axios.get(
@@ -32,7 +32,6 @@ function PokemonDetails() {
         setPokemon(response.data);
 
         const speciesUrl = response.data.species.url;
-        console.log(response);
         const speciesResponse = await axios.get(speciesUrl);
 
         const speciesData = speciesResponse.data;
@@ -68,19 +67,13 @@ function PokemonDetails() {
   if (!pokemon) {
     return <div>Loading...</div>;
   }
-  const { name, stats, moves, types, id: pokemonId } = pokemon;
+  const { name, stats,  types, id: pokemonId } = pokemon;
   const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
-console.log(pokemon)
-  const movesColumns = [[], [], [], [], [], [],[]];
-  moves.forEach((move, index) => {
-    movesColumns[index % 7].push(move.move.name);
-  });
 
   const primaryType = types[0] ? types[0].type.name.toLowerCase() : '';
   const isDualType = types.length > 1;
 
-
-  return (
+    return (
     <div className="pokemonDetails-container">
     <div className={`pokemon-detailsDetails ${primaryType} ${isDualType ? 'dual-type' : ''}`}>
       <div className="pokemon-headerDetails">
@@ -94,13 +87,15 @@ console.log(pokemon)
 </div>
       <div className="types-Details">
   
-  
-    {types.map((type, index) => (
-      <span key={index} className={`pokemonDetails-types ${type.type.name.toLowerCase().replace(/\s+/g, '')} ${isDualType ? 'single-type' :''}`}
-      >
-        {type.type.name}
-      </span>
-    ))}
+      {types.map((type, index) => (
+  <span
+    key={index}
+    className={`pokemonDetails-types ${type.type.name.toLowerCase().replace(/\s+/g, '')} ${isDualType ? 'single-type' : ''}`}
+  >
+    {type.type.name}
+ 
+  </span>
+))}
   
 </div>
       <div className="section-buttonsDetails">
@@ -122,12 +117,7 @@ console.log(pokemon)
         >
           Evolutions
         </button>
-        <button
-          className={activeSection === "moves" ? "active" : ""}
-          onClick={() => handleSectionClick("moves")}
-        >
-          Moves
-        </button>
+       
       </div>
       {activeSection === "description" && (
         <div className="pokemon-description">
@@ -157,7 +147,7 @@ console.log(pokemon)
 )}
 {activeSection === "evolutions" && (
   <div className="pokemon-evolutions">
-    <h3>Evolutions</h3>
+    <h3 className="Evolutions-title">Evolutions</h3>
     {evolutions.length > 1 ? (
       evolutions.map((evolution, index) => (
         <ul key={index}>
@@ -168,7 +158,7 @@ console.log(pokemon)
                 alt={evolution.name}
                 className="evolution-image"
               />
-              <span className="evolution-name">{evolution.name}</span>
+              <p className="evolution-name">{evolution.name}</p>
             </>
           )}
         </ul>
@@ -177,26 +167,14 @@ console.log(pokemon)
       <p className="no-evolution-message">This Pokémon does not have any evolutions.</p>
     )}
   </div>
+  
 )}
-      {activeSection === "moves" && (
-        
-        <div className="Moves-container">
-                <h3 className="moves-title">Moves</h3>
-
-          <div className="moves-columns">
-            {movesColumns.map((column, columnIndex) => (
-              <ul key={columnIndex}>
-                {column.map((move, moveIndex) => (
-                  <ul key={moveIndex}>{move}</ul>
-                ))}
-              </ul>
-            ))}
-          </div>
-        </div>
-      )}
+      
       
     </div>
     </div>
   );
 }
 export default PokemonDetails;
+
+
